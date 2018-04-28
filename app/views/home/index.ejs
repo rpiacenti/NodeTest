@@ -1,0 +1,92 @@
+<html ng-app="cdcApp">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <title>Job Applicants Report</title>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.9.1/build/cssreset/cssreset-min.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.9.1/build/cssbase/cssbase-min.css">
+    <style type="text/css">
+      #page {
+        width: 1200px;
+        margin: 30px auto;
+      }
+      .job-applicants {
+        width: 100%;
+      }
+      .job-name {
+        text-align: center;
+      }
+      .applicant-name {
+        width: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <table class="job-applicants">
+        <thead>
+          <tr>
+            <th>Job</th>
+            <th>Applicant Name</th>
+            <th>Email Address</th>
+            <th>Website</th>
+            <th>Skills</th>
+            <th>Cover Letter Paragraph</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          
+          <% var jobrow = ""; %>
+          <% var skillSet = ""; %>
+          <% for(var l=0; l < data[1].length; l++) { %>
+                <tr>
+                <%  
+                var rspan = 1;  
+                var lastSkill = "";
+                
+                rspan = (data[1][l].numapplicant + 1); 
+                
+                if(jobrow != data[1][l].name){
+                        jobrow = data[1][l].name;%>
+                        <td rowspan = <%= rspan %>><%= data[1][l].name; %></td>
+                <% } 
+                for(var i=0; i < data[0].length; i++) { 
+                    if(data[0][i].jobname  == data[1][l].name){ %> 
+                            <tr>
+                            <td ><%= data[0][i].appliacantname; %></td>
+                            <td ><a href="mailto:<%= data[0][i].email %>"><%= data[0][i].email; %></a></td>
+                            <td ><a href="http://<%= data[0][i].website %>"><%= data[0][i].website; %></a></td>
+                            <td>
+                                <% for(var s=0; s < data[2].length; s++) { %>
+                                <%        if(data[2][s].applicantskill === data[0][i].appliacantname) { %>
+                                            <li type="circle"><%= data[2][s].name %></li>
+                                <%        } %>
+                                <%        if(skillSet.indexOf(data[2][s].name ) < 0){ %>
+                                <%           skillSet = data[2][s].name + "," + skillSet; %>
+                                <%        } %>
+                                <% } %>
+                            </td>
+                            <td ><%= data[0][i].cover_letter; %></td></tr>
+                            </tr>
+                          
+                    <% }
+                } %>
+
+            </tr>         
+          <% } %>
+
+          </tbody>
+          
+        <tfoot>
+          <tr>
+            <% var skills = skillSet.split(",") %>
+            <td colspan="6"><%= data[0].length %> Applicants, <%= skills.length-1 %> Unique Skills</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </body>
+</html>
+
